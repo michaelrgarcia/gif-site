@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIFs!</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        img {
+            height: 60vh;
+            width: 60vw;
+        }
+
+        button {
+            padding: 5px 15px 5px 15px;
+        }
+
+        .search {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .submit {
+            align-self: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="search">
+        <div class="field">
+            <label for="search">Search GIF:</label>
+            <input type="text" name="search" id="search">
+        </div>
+        <button type="button" class="submit">Search</button>
+    </div>
+    <img src="#">
+    <button type="button" class="new-gif">New GIF</button>
+    <script> 
+        const img = document.querySelector("img");
+        const newGifBtn = document.querySelector("button.new-gif");
+        const msg = document.querySelector(".info-message");
+
+        const search = document.getElementById("search");
+        const submit = document.querySelector(".submit");
+
+        let lastSearch = "cat";
+
+        search.value = lastSearch;
+
+        newGIF(lastSearch);
+
+        newGifBtn.addEventListener("click", function() {
+            newGIF(lastSearch);
+        });
+
+        submit.addEventListener("click", function() {
+            if (lastSearch !== search.value) {
+                lastSearch = search.value;
+                newGIF(lastSearch);
+            }
+        });
+
+        function newGIF(lastSearch) {
+            fetch(`https://api.giphy.com/v1/gifs/translate?api_key=uldN0xaiyhNfeuN7QN98ROsslA7JpaDG&s=${lastSearch}`, {mode: "cors"}) 
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(response) {
+                if (!errorsPresent(response)) {
+                    img.src = response.data.images.original.url;
+                }
+            })
+            .catch(function(e) {
+                console.log(e);
+                img.src = "./imgs/invalid.webp";
+            });
+        }
+
+        function errorsPresent(response) {
+            if (!response.data) {
+                img.src = "./imgs/invalid.webp";
+                return true;
+            } 
+        }
+    </script>
+</body>
+</html>
