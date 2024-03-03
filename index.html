@@ -68,20 +68,18 @@
             }
         });
 
-        function newGIF(lastSearch) {
-            fetch(`https://api.giphy.com/v1/gifs/translate?api_key=uldN0xaiyhNfeuN7QN98ROsslA7JpaDG&s=${lastSearch}`, {mode: "cors"}) 
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(response) {
-                if (!errorsPresent(response)) {
-                    img.src = response.data.images.original.url;
+        async function newGIF(lastSearch) {
+            const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=uldN0xaiyhNfeuN7QN98ROsslA7JpaDG&s=${lastSearch}`, {mode: "cors"}) 
+            const gifData = await response.json();
+
+            try {
+                if (!errorsPresent(gifData)) {
+                    img.src = gifData.data.images.original.url;
                 }
-            })
-            .catch(function(e) {
-                console.log(e);
+            } catch (error) {
+                console.log(error);
                 img.src = "./imgs/invalid.webp";
-            });
+            }
         }
 
         function errorsPresent(response) {
